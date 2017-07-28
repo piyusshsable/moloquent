@@ -225,13 +225,13 @@ trait HybridRelations
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function belongsToMany($related, $collection = null, $foreignKey = null, $otherKey = null, $relation = null)
+    public function belongsToMany($related, $collection = null, $foreignKey = null, $otherKey = null, $parentKey = null, $relatedKey = null, $relation = null)
     {
         // If no relationship name was passed, we will pull backtraces to get the
         // name of the calling function. We will use that function name as the
         // title of this relation since that is a great convention to apply.
         if (is_null($relation)) {
-            
+
             // Laravel >= 5.4
             if (method_exists($this, 'guessBelongsToManyRelation')) {
                 $relation = $this->guessBelongsToManyRelation();
@@ -242,7 +242,7 @@ trait HybridRelations
 
         // Check if it is a relation with an original model.
         if (!is_subclass_of($related, 'Moloquent\Eloquent\Model')) {
-            return parent::belongsToMany($related, $collection, $foreignKey, $otherKey, $relation);
+            return parent::belongsToMany($related, $collection, $foreignKey, $otherKey, $parentKey, $relatedKey, $relation);
         }
 
         // First, we'll need to determine the foreign key and "other key" for the
@@ -266,6 +266,6 @@ trait HybridRelations
         // appropriate query constraint and entirely manages the hydrations.
         $query = $instance->newQuery();
 
-        return new BelongsToMany($query, $this, $collection, $foreignKey, $otherKey, $relation);
+        return new BelongsToMany($query, $this, $collection, $foreignKey, $otherKey, $parentKey, $relatedKey, $relation);
     }
 }
